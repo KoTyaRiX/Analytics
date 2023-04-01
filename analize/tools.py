@@ -1,4 +1,6 @@
 import pandas as pd
+from pandas.io import json
+
 from companies import get_companies_df, companies_get_df_by_inn
 from participants import get_participants_df
 from purchases import get_purschases_df, purschases_get_df_by_inn
@@ -10,13 +12,19 @@ def get_full_df() -> pd.DataFrame:
     participants_df = get_participants_df()
     purchases_df = get_purschases_df()
     companies_df = get_companies_df()
-    return purchases_df.merge(participants_df, on="id").merge(companies_df, on="supplier_inn")
+    total_df = purchases_df.merge(participants_df, on="id").merge(companies_df, on="supplier_inn")
+    total_df["okved"] = total_df["okved"].map(lambda s: str(s).split(".")[0])
+    total_df["publish_date"] = total_df["publish_date"].map(lambda s: str(s).split(" ")[0])
+    return total_df
 
 
 def get_df_by_okved(value: str) -> pd.DataFrame:
     total_df = get_full_df()
-    total_df["okved"] = total_df["okved"].map(lambda s: str(s).split(".")[0])
     return total_df[total_df["okved"] == str(value)]
+
+
+def get_json(df: pd.DataFrame):
+    return df.to_json
 
 
 # merge companies and participants by inn
