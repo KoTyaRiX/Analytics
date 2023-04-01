@@ -3,35 +3,34 @@ from companies import get_companies_df, companies_get_df_by_inn
 from participants import get_participants_df
 from purchases import get_purschases_df, purschases_get_df_by_inn
 from contract import get_contracts_df
+from okpd import get_okpd_dict, get_okpd_df
+from pprint import pprint
 
 pd.options.display.max_rows = 1000
 pd.set_option('display.max_columns', 10)
 
-# participants_df = get_participants_df()
+participants_df = get_participants_df()
 # print("participants_df")
 # print(participants_df.head(5))
-# purchases_df = get_purschases_df()
+purchases_df = get_purschases_df()
 # print("purchases_df")
 # print(purchases_df.head(5))
-# companies_df = get_companies_df()
+companies_df = get_companies_df()
 # print("companies_df")
 # print(companies_df.head(5))
-# contract_df = get_contracts_df()
+contract_df = get_contracts_df()
 # print('contract_df')
 # print(contract_df.head(5))
 
-okpd_df = pd.read_excel(io="../data/okpd.xlsx", engine='openpyxl', usecols="B:C", header=6)
-# print(okpd_dict.head(10))
+okpd_df = get_okpd_df()
+okpd_dict = get_okpd_dict()
 
-# parsed_okpd = pd.merge(okpd_dict, okpd_dict["Код"].map(lambda s: str(s).split(".")[0]))
-# print(parsed_okpd.head(1000).tail(5))
-okpd_df["Код"] = okpd_df["Код"].map(lambda s: str(s).split(".")[0])
-print("okpd_df")
-print(okpd_df.head(5))
-okpd_dict = {}
-for (k, v) in zip(okpd_df["Название"], okpd_df["Код"]):
-    okpd_dict[k] = v
-print(okpd_dict)
+# pprint(okpd_dict)
+print(purchases_df.count())
+purchases_df["purchase_code"] = purchases_df["purchase_name"]\
+    .map(lambda s: okpd_dict[s] if s in okpd_dict.keys() else None)
+purchases_df_in_okpd = purchases_df[purchases_df["purchase_code"].notnull()]
+print(purchases_df_in_okpd.count())
 
 
 # print(purchases_df["purchase_name"].)
