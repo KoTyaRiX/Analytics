@@ -1,4 +1,5 @@
 import pandas as pd
+pd.options.display.max_rows = 1000
 
 df = pd.read_csv('.\data\contracts.csv', sep=";")
 
@@ -14,7 +15,7 @@ result_df = pd.merge(withoot_null_df, sorted_counts,
 df = result_df.sort_values(by='id_count', ascending=False)
 # df = df.rename(columns={"id_y": "id_count"})
 print("by id count")
-print(df)
+print(df.head(1000))
 
 counts = withoot_null_df['contract_reg_number'].value_counts()
 # сортируем результат по индексу
