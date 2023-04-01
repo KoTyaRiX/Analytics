@@ -1,7 +1,7 @@
 import pandas as pd
 pd.options.display.max_rows = 1000
 
-df = pd.read_csv('.\data\contracts.csv', sep=";")
+df = pd.read_csv('../data/contracts.csv', sep=";")
 
 withoot_null_df = df[df["contract_reg_number"].notnull()]
 
