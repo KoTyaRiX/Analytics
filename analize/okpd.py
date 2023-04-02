@@ -1,9 +1,10 @@
 import pandas as pd
 
+import pymorphy2
+
+morph = pymorphy2.MorphAnalyzer()
 
 def to_normal_tuple(s: str) -> tuple:
-    import pymorphy2
-    morph = pymorphy2.MorphAnalyzer()
     mas = str(s).replace(",", " ").replace(";", " ").split(" ")
     answer = []
     for word in mas:

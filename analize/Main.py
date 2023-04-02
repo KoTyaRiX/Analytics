@@ -52,7 +52,9 @@ def get_dots_for_regration(okpd: str, time_start: str, time_end: str, delivery_r
 from okpd import get_okpd_dict, get_okpd_df, to_normal_tuple
 
 okpd_dict = get_okpd_dict()
-
-purchases_df = get_purschases_df()
-print(purchases_df["lot_name"].map(
-    lambda s: okpd_dict[ss] if (ss := to_normal_tuple(s)) in okpd_dict.keys() else None).notnull())
+print(okpd_dict)
+purchases_df = get_purschases_df().head(1000)
+# print(purchases_df["lot_name"].map(
+#     lambda s: okpd_dict[ss] if ((ss := to_normal_tuple(s)) in okpd_dict.keys()) else None).notnull())
+num_good_keys = (purchases_df['lot_name'].map(lambda s: to_normal_tuple(s) in okpd_dict)).sum()
+print(purchases_df)
