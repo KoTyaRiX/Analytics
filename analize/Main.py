@@ -53,8 +53,39 @@ from okpd import get_okpd_dict, get_okpd_df, to_normal_tuple
 
 okpd_dict = get_okpd_dict()
 print(okpd_dict)
-purchases_df = get_purschases_df().head(1000)
+purchases_df = get_purschases_df().head(100)
+
+
 # print(purchases_df["lot_name"].map(
 #     lambda s: okpd_dict[ss] if ((ss := to_normal_tuple(s)) in okpd_dict.keys()) else None).notnull())
-num_good_keys = (purchases_df['lot_name'].map(lambda s: to_normal_tuple(s) in okpd_dict)).sum()
-print(purchases_df)
+def get_okpd(s):
+    ss = to_normal_tuple(s)
+    if ss in okpd_dict:
+        return okpd_dict[ss]
+    return None
+
+
+purchases_df["okpd_id"] = purchases_df["lot_name"].map(get_okpd)
+
+
+# num_good_keys = (purchases_df['lot_name'].map(lambda s: to_normal_tuple(s) in okpd_dict)).sum()
+# print(purchases_df)
+
+def getSelectedDF(desired_okpd_id=None, desired_region=None):
+    if desired_region is None and desired_okpd_id is None:
+        selected_df = purchases_df
+    elif desired_okpd_id is None:
+        selected_df = purchases_df[
+            (purchases_df['delivery_region'] == desired_region)]
+    elif desired_region is None:
+        selected_df = purchases_df[
+            (purchases_df['okpd_id'] == desired_okpd_id)]
+    else:
+        selected_df = purchases_df[
+            (purchases_df['okpd_id'] == desired_okpd_id) & (purchases_df['delivery_region'] == desired_region)]
+    ss = selected_df[['publish_date', 'price']].to_numpy().tolist()
+    for i in range(len(ss)):
+        ss[i][1] = {'price': ss[i][1]}
+    return ss
+
+print(getSelectedDF(desired_region='Чувашия'))
